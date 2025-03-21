@@ -11,11 +11,11 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player.PlayerGui
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.45, 0, 0.45, 0) 
+mainFrame.Size = UDim2.new(0.45, 0, 0.45, 0)
 mainFrame.Position = UDim2.new(0.05, 0, 0.05, 0)
-mainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) 
+mainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 mainFrame.BorderSizePixel = 2
-mainFrame.BorderColor3 = Color3.new(0.1, 0.1, 0.1) 
+mainFrame.BorderColor3 = Color3.new(0.1, 0.1, 0.1)
 mainFrame.ClipsDescendants = true
 mainFrame.Parent = screenGui
 
@@ -26,7 +26,7 @@ corner.Parent = mainFrame
 local leftSide = Instance.new("Frame")
 leftSide.Size = UDim2.new(0.2, 0, 1, 0)
 leftSide.Position = UDim2.new(0, 0, 0, 0)
-leftSide.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) 
+leftSide.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 leftSide.Parent = mainFrame
 
 local cornerLeft = Instance.new("UICorner")
@@ -166,7 +166,6 @@ local function createRecordEntry(recordName)
             isPlaying = true
             player.Character:SetPrimaryPartCFrame(data.startPosition)
             for _, action in pairs(data.actions) do
-
                 wait(action.delay)
                 player.Character:SetPrimaryPartCFrame(action.position)
             end
