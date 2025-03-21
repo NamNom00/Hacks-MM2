@@ -1,115 +1,106 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- UI Setup
-local gui = Instance.new("ScreenGui")
-gui.Parent = playerGui
-gui.Name = "ToolGiverGUI"
-gui.ResetOnSpawn = false
+local toolGiverGui = Instance.new("ScreenGui", playerGui)
+toolGiverGui.Name = "ToolGiverUI"
+toolGiverGui.ResetOnSpawn = false
 
--- Frame (Main UI)
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 200, 0, 350)
-mainFrame.Position = UDim2.new(0.5, -100, 0.3, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
-mainFrame.BorderSizePixel = 2
-mainFrame.Parent = gui
+local mainFrame = Instance.new("Frame", toolGiverGui)
+mainFrame.Size = UDim2.new(0, 450, 0, 200)
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
 
--- Title Bar
-local titleBar = Instance.new("TextButton")
-titleBar.Size = UDim2.new(1, 0, 0, 40)
-titleBar.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
-titleBar.Text = "Tools"
-titleBar.Font = Enum.Font.SourceSansBold
-titleBar.TextSize = 24
-titleBar.Parent = mainFrame
+local toolsHeader = Instance.new("TextButton", mainFrame)
+toolsHeader.Size = UDim2.new(1, 0, 0, 30)
+toolsHeader.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+toolsHeader.Text = "Tools  ▽"
+toolsHeader.TextColor3 = Color3.fromRGB(255, 255, 255)
+toolsHeader.TextScaled = true
 
--- Minimize Button
-local minimizeBtn = Instance.new("TextButton")
-minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-minimizeBtn.Position = UDim2.new(1, -65, 0, 5)
-minimizeBtn.Text = "_"
-minimizeBtn.TextSize = 20
-minimizeBtn.Parent = titleBar
+local toolsList = Instance.new("ScrollingFrame", mainFrame)
+toolsList.Size = UDim2.new(1, -10, 0, 120)
+toolsList.Position = UDim2.new(0, 5, 0, 40)
+toolsList.BackgroundTransparency = 1
+toolsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+toolsList.ScrollBarThickness = 5
+toolsList.Visible = false
 
--- Close Button
-local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 30, 0, 30)
-closeBtn.Position = UDim2.new(1, -35, 0, 5)
-closeBtn.Text = "X"
-closeBtn.TextSize = 20
-closeBtn.Parent = titleBar
+local claimButton = Instance.new("TextButton", mainFrame)
+claimButton.Size = UDim2.new(0.5, 0, 0, 40)
+claimButton.Position = UDim2.new(0.25, 0, 0.75, 0)
+claimButton.BackgroundTransparency = 1
+claimButton.Text = "Claim Tool"
+claimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+claimButton.TextScaled = true
+claimButton.BorderMode = Enum.BorderMode.Outline
+claimButton.BorderSizePixel = 2
+claimButton.BorderColor3 = Color3.fromRGB(255, 0, 255)
 
--- Tool List
-local toolList = Instance.new("ScrollingFrame")
-toolList.Size = UDim2.new(1, -20, 1, -80)
-toolList.Position = UDim2.new(0, 10, 0, 50)
-toolList.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-toolList.BorderSizePixel = 2
-toolList.ScrollBarThickness = 10
-toolList.Parent = mainFrame
-toolList.Visible = false -- Hidden by default
+local minimizeButton = Instance.new("TextButton", mainFrame)
+minimizeButton.Size = UDim2.new(0, 25, 0, 25)
+minimizeButton.Position = UDim2.new(1, -55, 0, 5)
+minimizeButton.Text = "−"
+minimizeButton.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
 
--- Claim Button
-local claimBtn = Instance.new("TextButton")
-claimBtn.Size = UDim2.new(0.8, 0, 0, 40)
-claimBtn.Position = UDim2.new(0.1, 0, 1, -50)
-claimBtn.BackgroundTransparency = 1
-claimBtn.Text = "Claim Tool"
-claimBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-claimBtn.Font = Enum.Font.SourceSansBold
-claimBtn.TextSize = 20
-claimBtn.Parent = mainFrame
+local closeButton = Instance.new("TextButton", mainFrame)
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 5)
+closeButton.Text = "X"
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 
--- UI Outline Effect
-local uiOutline = Instance.new("UIStroke")
-uiOutline.Thickness = 3
-uiOutline.Color = Color3.fromRGB(255, 0, 255)
-uiOutline.Parent = mainFrame
+local toggleButton = Instance.new("TextButton", mainFrame)
+toggleButton.Size = UDim2.new(0, 50, 0, 25)
+toggleButton.Position = UDim2.new(0, 5, 0, 5)
+toggleButton.Text = "☀"
+toggleButton.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
 
--- Toggle Light/Dark Mode Button
-local toggleModeBtn = Instance.new("TextButton")
-toggleModeBtn.Size = UDim2.new(0.3, 0, 0, 30)
-toggleModeBtn.Position = UDim2.new(0, 10, 1, -85)
-toggleModeBtn.Text = "🌞"
-toggleModeBtn.TextSize = 18
-toggleModeBtn.Parent = mainFrame
-
--- Minimized Icon
-local minimizedIcon = Instance.new("ImageButton")
+local minimizedIcon = Instance.new("ImageButton", toolGiverGui)
 minimizedIcon.Size = UDim2.new(0, 50, 0, 50)
-minimizedIcon.Position = UDim2.new(0.9, -55, 0.9, -55)
+minimizedIcon.Position = UDim2.new(0.9, 0, 0.1, 0)
 minimizedIcon.Image = "rbxassetid://84855592579272"
-minimizedIcon.Parent = gui
 minimizedIcon.Visible = false
+minimizedIcon.Active = true
+minimizedIcon.Draggable = true
 
--- Functions
-local function populateTools()
-    for _, tool in pairs(ReplicatedStorage:GetChildren()) do
-        if tool:IsA("Tool") then
-            local toolButton = Instance.new("TextButton")
-            toolButton.Size = UDim2.new(1, 0, 0, 30)
-            toolButton.Text = tool.Name
-            toolButton.Parent = toolList
-            toolButton.MouseButton1Click:Connect(function()
-                local clonedTool = tool:Clone()
-                clonedTool.Parent = player.Backpack
-            end)
+toolsHeader.MouseButton1Click:Connect(function()
+    toolsList.Visible = not toolsList.Visible
+    toolsHeader.Text = toolsList.Visible and "Tools  △" or "Tools  ▽"
+end)
+
+local function refreshToolList()
+    for _, child in pairs(toolsList:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+    end
+    
+    local toolsFolder = ReplicatedStorage:FindFirstChild("Tools")
+    if toolsFolder then
+        for _, tool in pairs(toolsFolder:GetChildren()) do
+            if tool:IsA("Tool") then
+                local toolButton = Instance.new("TextButton", toolsList)
+                toolButton.Size = UDim2.new(1, 0, 0, 30)
+                toolButton.Text = tool.Name
+                toolButton.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+                toolButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                toolButton.MouseButton1Click:Connect(function()
+                    ReplicatedStorage:FindFirstChild("Tools")[tool.Name]:Clone().Parent = player.Backpack
+                end)
+            end
         end
     end
 end
-populateTools()
 
-titleBar.MouseButton1Click:Connect(function()
-    toolList.Visible = not toolList.Visible
-end)
+refreshToolList()
 
-minimizeBtn.MouseButton1Click:Connect(function()
+minimizeButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = false
     minimizedIcon.Visible = true
 end)
@@ -119,26 +110,20 @@ minimizedIcon.MouseButton1Click:Connect(function()
     minimizedIcon.Visible = false
 end)
 
-closeBtn.MouseButton1Click:Connect(function()
-    gui.Enabled = false
+closeButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
+    minimizedIcon.Visible = false
 end)
 
-UIS.InputBegan:Connect(function(input, gameProcessed)
+UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.RightShift then
-        gui.Enabled = not gui.Enabled
+        mainFrame.Visible = not mainFrame.Visible
     end
 end)
 
-toggleModeBtn.MouseButton1Click:Connect(function()
-    if mainFrame.BackgroundColor3 == Color3.fromRGB(180, 180, 180) then
-        mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark Mode
-        titleBar.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-        toolList.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-        toggleModeBtn.Text = "🌙"
-    else
-        mainFrame.BackgroundColor3 = Color3.fromRGB(180, 180, 180) -- Light Mode
-        titleBar.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
-        toolList.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-        toggleModeBtn.Text = "🌞"
-    end
+local isDarkMode = true
+toggleButton.MouseButton1Click:Connect(function()
+    isDarkMode = not isDarkMode
+    mainFrame.BackgroundColor3 = isDarkMode and Color3.fromRGB(100, 100, 100) or Color3.fromRGB(230, 230, 230)
+    toggleButton.Text = isDarkMode and "☀" or "🌙"
 end)
