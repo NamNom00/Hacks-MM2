@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -46,14 +47,14 @@ closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 -- Minimized Icon
 local minimizedIcon = Instance.new("ImageButton", cheatGui)
 minimizedIcon.Size = UDim2.new(0, 50, 0, 50)
-minimizedIcon.Position = UDim2.new(0, 10, 0.5, -25)
+minimizedIcon.Position = UDim2.new(0.05, 0, 0.5, -25) -- Moved towards the middle
 minimizedIcon.Image = "rbxassetid://121922407716633"
 minimizedIcon.Visible = false
 minimizedIcon.Active = true
 minimizedIcon.Draggable = true
 
 -- Categories (Sidebar)
-local categories = {"Visuals", "Player", "Misc", "Special"}
+local categories = {"Visuals", "Player", "Misc", "Special", "Teleport"}
 local categoryButtons = {}
 local currentCategory = "Visuals"
 
@@ -65,7 +66,7 @@ sidebar.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
 for i, category in ipairs(categories) do
     local button = Instance.new("TextButton", sidebar)
     button.Size = UDim2.new(1, 0, 0, 40)
-    button.Position = UDim2.new(0, 0, (i-1) * 0.25, 0)
+    button.Position = UDim2.new(0, 0, (i-1) * 0.2, 0)
     button.Text = category
     button.TextColor3 = Color3.fromRGB(0, 0, 0)
     button.MouseButton1Click:Connect(function()
@@ -81,43 +82,26 @@ contentFrame.Size = UDim2.new(0.8, 0, 0.9, 0)
 contentFrame.Position = UDim2.new(0.2, 0, 0.1, 0)
 contentFrame.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 
--- Update UI based on category
+-- Function to Update UI Based on Category
 local function updateCategoryUI()
     contentFrame:ClearAllChildren()
-    
-    if currentCategory == "Visuals" then
-        local espButtons = {"Murderer EsP", "Sheriff EsP", "Innocent EsP"}
-        for i, name in ipairs(espButtons) do
-            local button = Instance.new("TextButton", contentFrame)
-            button.Size = UDim2.new(0.9, 0, 0, 40)
-            button.Position = UDim2.new(0.05, 0, (i-1) * 0.2, 0)
-            button.Text = name .. " [OFF]"
-            button.MouseButton1Click:Connect(function()
-                button.Text = button.Text:find("OFF") and name .. " [ON]" or name .. " [OFF]"
-            end)
-        end
-    elseif currentCategory == "Player" then
-        -- Walkspeed
-        local speedLabel = Instance.new("TextLabel", contentFrame)
-        speedLabel.Text = "Speed"
-        speedLabel.Position = UDim2.new(0.05, 0, 0, 40)
 
-        local speedSlider = Instance.new("TextBox", contentFrame)
-        speedSlider.Text = "16"
-        speedSlider.Position = UDim2.new(0.3, 0, 0, 40)
-        speedSlider.FocusLost:Connect(function()
-            local speed = tonumber(speedSlider.Text)
-            if speed then player.Character.Humanoid.WalkSpeed = speed end
-        end)
-    elseif currentCategory == "Misc" then
-        local miscButtons = {"Silent Aim", "Auto Farm", "Reset Character"}
-        for i, name in ipairs(miscButtons) do
+    if currentCategory == "Teleport" then
+        local locations = {
+            {"Lobby", Vector3.new(0, 10, 0)},
+            {"Safe Zone", Vector3.new(100, 100, 100)}, -- Floating in void
+            {"Game", Vector3.new(50, 10, 50)}
+        }
+
+        for i, location in ipairs(locations) do
             local button = Instance.new("TextButton", contentFrame)
             button.Size = UDim2.new(0.9, 0, 0, 40)
             button.Position = UDim2.new(0.05, 0, (i-1) * 0.2, 0)
-            button.Text = name
+            button.Text = location[1]
             button.MouseButton1Click:Connect(function()
-                if name == "Reset Character" then player.Character:BreakJoints() end
+                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    player.Character.HumanoidRootPart.CFrame = CFrame.new(location[2])
+                end
             end)
         end
     end
