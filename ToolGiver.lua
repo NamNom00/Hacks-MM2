@@ -84,7 +84,7 @@ toggleModeBtn.Parent = mainFrame
 local minimizedIcon = Instance.new("ImageButton")
 minimizedIcon.Size = UDim2.new(0, 50, 0, 50)
 minimizedIcon.Position = UDim2.new(0.9, -55, 0.9, -55)
-minimizedIcon.Image = "rbxassetid://IMAGE_ID_HERE" -- Replace with your image ID
+minimizedIcon.Image = "rbxassetid://84855592579272"
 minimizedIcon.Parent = gui
 minimizedIcon.Visible = false
 
